@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Persons</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
+    <script>
+        $(function() {
+            $.ajax({
+                url: "../persons.json",
+                dataType: "json",
+                success: function(data) {
+                    for (i = 0; i < data.persons.length; i++) {
+                    $("#persons").append($("<li class='list-group-item'></li>").text(data.persons[i].name));
+                    }
+                }        
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="page-header" text-align="center">
+        <h1>Persons</small></h1>
+    </div>
+    <ul class="list-group col-xs-4 col-xs-offset-4" id="persons">
+    </ul>
+
+
+</body>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="{@style}.xsl"?>
+<page connection="labor"
+	  xmlns:xsql="urn:oracle-xsql"
+	  pname="%"
+	  address="%"
+	  phone="%"
+	  search-key="none"
+	  skip="0"
+	  max-rows="5"
+	  search-value="">
+
+<!-- Paraméterek értékét átadjuk XSL-nek -->
+<xsql:include-param name="search-key"/>
+<xsql:include-param name="search-value"/>
+<xsql:include-param name="skip"/>
+<xsql:include-param name="max-rows"/>
+
+<!-- A felhasználó által megadott keresési paraméternek megfelelő változó értékének beállítása -->
+<xsql:set-page-param name="{@search-key}" value="%{@search-value}%"/>
+
+<!-- Találatok számának lekérdezése -->
+<xsql:set-page-param name="num-results"
+            bind-params="pname address phone">
+	select count(*)
+	from awxuc6.places
+	where upper(name) like upper(?)
+	and upper(address) like upper(?)
+	and phone like ?
+</xsql:set-page-param>
+<xsql:include-param name="num-results"/>
+
+<!-- Találatok -->
+<xsql:query bind-params="pname address phone"
+		    skip-rows="{@skip}"
+		    max-rows="{@max-rows}"
+		    rowset-element="PLACES"
+		    row-element="PLACE">
+	select place_id, name, address, phone, price
+	from awxuc6.places
+	where upper(name) like upper(?)
+	and upper(address) like upper(?)
+	and phone like ?
+	order by name
+</xsql:query>
+
+<!-- segéd lekérdezés: ez alapján döntjük el, hogy melyik szhelyen hányan jártak -->
+<xsql:query rowset-element="VISITS" row-element="PNAME">
+	<!-- minden szhely annyiszor fog szereplni az eredményhalmazban, ahányan meglátogatták -->
+	select places.name
+	from awxuc6.places, awxuc6.visits
+	where visits.place_id = places.place_id
+</xsql:query>
+
+</page>

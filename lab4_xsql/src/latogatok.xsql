@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="latogatok.xsl"?>
+<page connection="labor"
+	  xmlns:xsql="urn:oracle-xsql"
+	  place_id="">
+
+<!-- Paraméter értékét átadjuk XSL-nek -->
+<xsql:include-param name="place_id"/>
+ 
+ <xsql:query bind-params="place_id">
+ 	select persons.name as person, places.name as place
+	from awxuc6.persons, awxuc6.visits, awxuc6.places
+	where places.place_id = ?
+	and places.place_id = visits.place_id(+)
+	and persons.person_id(+) = visits.person_id
+	order by person
+</xsql:query>
+
+</page>
